@@ -1,0 +1,82 @@
+# AI Model Gateway 🚀
+
+A production-style AI Model Gateway built with FastAPI, supporting multiple large language model providers with a unified OpenAI-like interface and streaming response capability.
+
+---
+
+## 📌 Overview
+
+This project is an AI gateway that abstracts multiple LLM providers into a single standardized API layer.  
+It enables seamless switching between models without changing client-side logic.
+
+---
+
+## ✨ Key Features
+
+- 🔌 Multi-model support (DeepSeek / Qwen / GLM / Kimi)
+- 🔁 Unified API interface (OpenAI-style design)
+- 🌊 Streaming response via SSE (Server-Sent Events)
+- 🧠 Model routing layer (extensible architecture)
+- ⚙️ Environment-based configuration (.env)
+- 🧩 Modular provider system (plug & play design)
+- 🚀 Lightweight FastAPI backend
+
+---
+
+## 🧠 Supported Models
+
+| Provider   | Status |
+|------------|--------|
+| DeepSeek   | ✅ |
+| Qwen       | ✅ |
+| GLM        | ✅ |
+| Kimi       | ✅ |
+
+---
+
+## 🏗️ Architecture
+
+
+Client
+↓
+FastAPI Gateway
+↓
+Model Router Layer
+↓
+Provider Adapters
+↓
+DeepSeek / Qwen / GLM / Kimi APIs
+
+
+---
+
+## 📁 Project Structure
+
+
+ai-model-hub/
+│
+├── backend/
+│ ├── main.py
+│ ├── providers/
+│ │ ├── deepseek.py
+│ │ ├── qwen.py
+│ │ ├── glm.py
+│ │ ├── kimi.py
+│ │
+│ ├── utils/
+│ │ ├── sse.py
+│ │ ├── router.py
+│ │
+│ ├── .env (NOT committed)
+│
+├── frontend/ (optional)
+├── requirements.txt
+└── README.md
+
+
+---
+
+## ⚙️ Installation
+
+```bash id="install1"
+git clone git@github.com:
