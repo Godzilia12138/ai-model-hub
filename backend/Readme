@@ -1,82 +1,74 @@
-# AI Model Gateway 🚀
+# AI Model Gateway
 
-A production-style AI Model Gateway built with FastAPI, supporting multiple large language model providers with a unified OpenAI-like interface and streaming response capability.
+A FastAPI-based multi-model AI gateway that provides a unified API interface for interacting with multiple large language model providers with streaming support.
 
----
+This project integrates multiple LLM providers including DeepSeek, Qwen, GLM, and Kimi (Moonshot AI), and allows users to explicitly select which model to use through a single backend service.
 
-## 📌 Overview
+The system is designed with a modular provider architecture, where each model is encapsulated in its own adapter layer, making it easy to extend new models in the future.
 
-This project is an AI gateway that abstracts multiple LLM providers into a single standardized API layer.  
-It enables seamless switching between models without changing client-side logic.
+It supports OpenAI-style Server-Sent Events (SSE) streaming responses for real-time output and uses environment variables (.env) for secure API key management.
 
----
-
-## ✨ Key Features
-
-- 🔌 Multi-model support (DeepSeek / Qwen / GLM / Kimi)
-- 🔁 Unified API interface (OpenAI-style design)
-- 🌊 Streaming response via SSE (Server-Sent Events)
-- 🧠 Model routing layer (extensible architecture)
-- ⚙️ Environment-based configuration (.env)
-- 🧩 Modular provider system (plug & play design)
-- 🚀 Lightweight FastAPI backend
+The current version focuses on explicit model selection rather than automatic routing, but the architecture is designed to support future enhancements such as intelligent routing, fallback mechanisms, and OpenAI-compatible API interfaces.
 
 ---
 
-## 🧠 Supported Models
+Supported models include DeepSeek, Qwen, GLM, and Kimi.
 
-| Provider   | Status |
-|------------|--------|
-| DeepSeek   | ✅ |
-| Qwen       | ✅ |
-| GLM        | ✅ |
-| Kimi       | ✅ |
+The backend is built with FastAPI and Python, using a clean separation between API layer, routing layer, and provider layer.
 
----
+Each request is processed through a unified /chat endpoint where the client specifies the model name and message content, and the corresponding provider handles the request to external APIs.
 
-## 🏗️ Architecture
-
-
-Client
-↓
-FastAPI Gateway
-↓
-Model Router Layer
-↓
-Provider Adapters
-↓
-DeepSeek / Qwen / GLM / Kimi APIs
-
+Streaming responses are returned in real time using SSE format.
 
 ---
 
-## 📁 Project Structure
+To run the project:
 
+Install dependencies:
 
-ai-model-hub/
-│
-├── backend/
-│ ├── main.py
-│ ├── providers/
-│ │ ├── deepseek.py
-│ │ ├── qwen.py
-│ │ ├── glm.py
-│ │ ├── kimi.py
-│ │
-│ ├── utils/
-│ │ ├── sse.py
-│ │ ├── router.py
-│ │
-│ ├── .env (NOT committed)
-│
-├── frontend/ (optional)
-├── requirements.txt
-└── README.md
+pip install -r requirements.txt
 
+Configure environment variables in backend/.env:
+
+DEEPSEEK_API_KEY=
+QWEN_API_KEY=
+GLM_API_KEY=
+KIMI_API_KEY=
+
+Start the server:
+
+uvicorn backend.main:app --reload
+
+The API can then be accessed via:
+
+http://127.0.0.1:8000/docs
 
 ---
 
-## ⚙️ Installation
+The system architecture follows a simple flow:
 
-```bash id="install1"
-git clone git@github.com:
+Client → FastAPI Gateway → Router Layer → Provider Adapters → External LLM APIs
+
+Each provider is implemented as an independent module, allowing easy addition of new models without modifying the core logic.
+
+The project also includes a streaming utility based on SSE parsing to handle token-by-token responses from different model APIs.
+
+---
+
+Security is handled through environment variables, and .env files are excluded from version control to prevent accidental exposure of API keys.
+
+A .env.example file is recommended for sharing configuration templates.
+
+---
+
+Future improvements include:
+
+- Intelligent model routing based on user input or task type  
+- Automatic fallback between models  
+- Token usage tracking  
+- Rate limiting  
+- WebSocket support for bidirectional communication  
+
+---
+
+This project is intended as a learning-oriented AI gateway architecture and can be extended into a production-ready multi-model orchestration system.
