@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AI Model Compare</title>
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        .container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .box {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 500px;
+            overflow-y: auto;
+        }
+
+        .title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .text {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>AI 多模型对比</h2>
+
+<input id="input" placeholder="输入问题..." style="width:300px;">
+<button onclick="send()">发送</button>
+
+<div class="container">
+    <div class="box">
+        <div class="title">GLM</div>
+        <div id="glm"></div>
+    </div>
+
+    <div class="box">
+        <div class="title">QWEN</div>
+        <div id="qwen"></div>
+    </div>
+
+    <div class="box">
+        <div class="title">KIMI</div>
+        <div id="kimi"></div>
+    </div>
+
+    <div class="box">
+        <div class="title">DEEPSEEK</div>
+        <div id="deepseek"></div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>

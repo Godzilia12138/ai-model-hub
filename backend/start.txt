@@ -1,0 +1,17 @@
+@echo off
+
+echo =========================
+echo  AI Model Hub 启动中...
+echo =========================
+
+cd /d F:\ai-model-hub\backend
+
+call venv\Scripts\activate
+
+echo.
+echo [1] 虚拟环境已激活
+echo [2] 正在启动 FastAPI...
+
+uvicorn main:app --reload
+
+pause
