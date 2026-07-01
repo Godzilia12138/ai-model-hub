@@ -1,4 +1,4 @@
-# AI Model Gateway
+AI Model Gateway
 
 A FastAPI-based multi-model AI gateway that provides a unified API interface for interacting with multiple large language model providers with streaming support.
 
@@ -10,65 +10,129 @@ It supports OpenAI-style Server-Sent Events (SSE) streaming responses for real-t
 
 The current version focuses on explicit model selection rather than automatic routing, but the architecture is designed to support future enhancements such as intelligent routing, fallback mechanisms, and OpenAI-compatible API interfaces.
 
----
-
-Supported models include DeepSeek, Qwen, GLM, and Kimi.
-
-The backend is built with FastAPI and Python, using a clean separation between API layer, routing layer, and provider layer.
-
-Each request is processed through a unified /chat endpoint where the client specifies the model name and message content, and the corresponding provider handles the request to external APIs.
-
-Streaming responses are returned in real time using SSE format.
-
----
-
-To run the project:
-
-Install dependencies:
-
-pip install -r requirements.txt
-
-Configure environment variables in backend/.env:
-
-DEEPSEEK_API_KEY=
-QWEN_API_KEY=
-GLM_API_KEY=
-KIMI_API_KEY=
-
-Start the server:
-
-uvicorn backend.main:app --reload
-
-The API can then be accessed via:
-
-http://127.0.0.1:8000/docs
-
----
-
-The system architecture follows a simple flow:
+Supported Models
+DeepSeek
+Qwen
+GLM
+Kimi (Moonshot AI)
+Architecture
 
 Client → FastAPI Gateway → Router Layer → Provider Adapters → External LLM APIs
 
-Each provider is implemented as an independent module, allowing easy addition of new models without modifying the core logic.
+Each provider is implemented as an independent module, allowing easy extension without modifying core logic.
 
-The project also includes a streaming utility based on SSE parsing to handle token-by-token responses from different model APIs.
+Database Design (Important)
 
----
+This project uses MySQL with SQLAlchemy ORM.
 
-Security is handled through environment variables, and .env files are excluded from version control to prevent accidental exposure of API keys.
+What is stored
 
-A .env.example file is recommended for sharing configuration templates.
+The database is used for chat persistence, not for model inference.
 
----
+It stores:
 
-Future improvements include:
+Session information (conversation list)
+User messages
+Assistant responses
+Model outputs per session
+Tables
+session
 
-- Intelligent model routing based on user input or task type  
-- Automatic fallback between models  
-- Token usage tracking  
-- Rate limiting  
-- WebSocket support for bidirectional communication  
+Stores conversation sessions.
 
----
+id
+title
+message
 
-This project is intended as a learning-oriented AI gateway architecture and can be extended into a production-ready multi-model orchestration system.
+Stores chat history.
+
+id
+session_id
+role (user / assistant)
+model (glm / qwen / kimi / deepseek / user)
+content
+Local Development Setup
+1. Install dependencies
+pip install -r requirements.txt
+2. Configure environment variables
+
+Create a .env file in backend folder:
+
+DEEPSEEK_API_KEY=your_key_here
+QWEN_API_KEY=your_key_here
+GLM_API_KEY=your_key_here
+KIMI_API_KEY=your_key_here
+
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=your_password
+MYSQL_DATABASE=ai_hub
+3. Start MySQL
+
+Make sure MySQL is running and database exists:
+
+CREATE DATABASE ai_hub;
+
+👉 Tables will be auto-created by SQLAlchemy:
+
+Base.metadata.create_all(bind=engine)
+
+So you do NOT need to manually create tables.
+
+4. Run backend
+uvicorn main:app --reload
+
+or (if packaged):
+
+uvicorn backend.main:app --reload
+5. API Access
+
+Swagger UI:
+
+http://127.0.0.1:8000/docs
+
+WebSocket:
+
+ws://127.0.0.1:8000/ws/compare
+How It Works
+Request flow
+Client sends message
+Backend saves session + user message
+Router dispatches to multiple models
+Each model returns response
+Backend streams results via WebSocket
+Results saved into database
+Environment Security
+
+This project uses .env for sensitive keys.
+
+Important:
+.env is NOT pushed to GitHub
+Use .env.example for sharing config template
+Features
+Multi-model parallel calling
+WebSocket real-time streaming
+Session-based chat history
+MySQL persistence
+Modular provider architecture
+Extensible routing system
+Future Improvements
+Intelligent routing (auto model selection)
+Fallback mechanism (model failure retry)
+Token usage tracking
+Rate limiting
+OpenAI-compatible API
+Redis cache optimization
+Authentication system
+Deployment Notes
+
+When deploying:
+
+Ensure .env is configured on server
+MySQL is accessible remotely or via Docker
+Open port 8000
+Use uvicorn --host 0.0.0.0 for external access
+License
+
+This project is for learning and research purposes and can be extended into production-ready AI orchestration systems.
